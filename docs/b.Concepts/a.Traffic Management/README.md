@@ -64,6 +64,8 @@ spec:
 
 ### Destination rules
 
+- https://istio.io/latest/docs/reference/config/networking/destination-rule/
+
 ```yaml
 apiVersion: networking.istio.io/v1
 kind: DestinationRule
