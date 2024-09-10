@@ -2,6 +2,10 @@
 
 see https://training.linuxfoundation.org/certification/istio-certified-associate-ica/
 
+## Logistics
+
+- Duration: 2hrs/ Cost: $250/ Passing Score : 75%/ Get a free retake
+
 ## Curriculums
 
 see https://github.com/cncf/curriculum/blob/master/ICA_Curriculum.pdf
@@ -37,4 +41,5 @@ E. Advanced Scenarios (13%)
 
 - https://www.udemy.com/course/istio-hands-on-for-kubernetes/
 - https://www.youtube.com/watch?v=m0GjtrCVSdI
+- https://docs.linuxfoundation.org/tc-docs/certification/frequently-asked-questions-ica
 
