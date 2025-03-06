@@ -31,7 +31,7 @@ C. Resillience and Fault Injection (20%)
 D. Securing Workloads(20%)
 - Understand Istio security features
 - Set up Istio authorization for HTTP/TCP traffic in the mesh
-- Configure matual TLS at mesh, namespace, and workload levels
+- Configure mutual TLS at mesh, namespace, and workload levels
 
 E. Advanced Scenarios (13%)
 - Understand how to onboard non-kubernetes workloads to the mesh
