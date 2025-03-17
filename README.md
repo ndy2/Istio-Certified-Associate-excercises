@@ -42,4 +42,13 @@ E. Advanced Scenarios (13%)
 - https://www.udemy.com/course/istio-hands-on-for-kubernetes/
 - https://www.youtube.com/watch?v=m0GjtrCVSdI
 - https://docs.linuxfoundation.org/tc-docs/certification/frequently-asked-questions-ica
+- https://medium.com/@arivermar/exploring-the-basics-of-istio-traffic-management-cee13f0817c2
+- https://medium.com/@arivermar/demistifying-istio-gateways-762d37070431
 
+### tips
+
+- Use v1beta1 api for 1.18 clusters
+  - The ICA environment is currently running Istio 1.18.2. [ICA Exam Env](https://docs.linuxfoundation.org/tc-docs/certification/important-instructions-ica#ica-exam-environment)
+- Accessible Documentations
+  - https://istio.io/latest/docs/
+  - https://kubernetes.io/docs
