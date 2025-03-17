@@ -10,22 +10,22 @@ see https://training.linuxfoundation.org/certification/istio-certified-associate
 
 see https://github.com/cncf/curriculum/blob/master/ICA_Curriculum.pdf
 
-A. Istio Installllation, Upgrade & Configuration (7%)
+A. Istio Installation, Upgrade & Configuration (7%)
 - Using the Istio CLI to install a basic cluster
 - Customizing the Istio installation with the IstioOperator API
 - Using overlays to manage Istio component settings
 
 B. Traffic Management(40%)
 - Controlling network traffic flows within a service mesh
-- Configurating sidecar injection
+- Configuring sidecar injection
 - Using the Gateway resource to configure ingress and egress traffic
-- Understanding how to use ServiceEntry resources for adding entries to inernal service registery
+- Understanding how to use ServiceEntry resources for adding entries to internal service registry
 - Define traffic policies using DestinationRule
 - Configure traffic mirroring capabilities
 
-C. Resillience and Fault Injection (20%)
+C. Resilience and Fault Injection (20%)
 - Configuring circuit breakers(with or without outlier detection)
-- Using resillience features
+- Using resilience features
 - Creating fault injection
 
 D. Securing Workloads(20%)
