@@ -1,0 +1,83 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: reviews-route
+spec:
+  hosts:
+    - reviews
+  http:
+    - match:
+        - uri:
+            prefix: "/api"
+      route:
+        - destination:
+            host: reviews.prod.svc.cluster.local
+            subset: v1
+          weight: 80
+        - destination:
+            host: reviews.prod.svc.cluster.local
+            subset: v2
+          weight: 20
+---
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: ratings-cb-policy
+spec:
+  host: ratings
+  trafficPolicy:
+    outlierDetection:
+      consecutive5xxErrors: 5
+      baseEjectionTime: 10m
+      maxEjectionPercent: 20
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: productpage-ap
+spec:
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            namespaces: ["dev"]
+      to:
+        - operation:
+            methods: ["GET"]
+      when:
+        - key: request.headers[x-user]
+          values: ["admin"]
+---
+apiVersion: networking.istio.io/v1
+kind: ServiceEntry
+metadata:
+  name: external-svc-https
+spec:
+  hosts:
+    - api.example.com
+  location: MESH_EXTERNAL
+  ports:
+    - number: 443
+      name: https
+      protocol: TLS
+  resolution: DNS
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: bookinfo
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: details
+  namespace: bookinfo
+spec:
+  mtls:
+    mode: PERMISSIVE
+
+
