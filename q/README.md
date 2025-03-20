@@ -9,13 +9,21 @@ Q: 예상 질문
 ---
 
 Q: What is istio IstioOperator?
+
 Q: What is istio Gateway?
+
 Q: What is istio VirtualService?
+
 Q: What is istio DestinationRule?
+
 Q: What is istio ServiceEntry?
+
 Q: What is istio PeerAuthentication?
+
 Q: What is istio RequestAuthentication?
+
 Q: What is istio AuthorizationPolicy?
+
 Q: What is istio EnvoyFilter?
 
 ---
@@ -23,6 +31,7 @@ Q: What is istio EnvoyFilter?
 Q: How to enforce tls for `api.google.com` ?
 
 Q: How to enforce tls for `example.com` http(s) req for the cluster?
+
 Q: How to make that traffic goes to specific service in kubernetes?
 
 Q: How to make a workload with label `app=bookinfo` allow only `GET` req with service account  `my-sa` defined in ns `default`?
