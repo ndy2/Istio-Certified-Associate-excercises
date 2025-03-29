@@ -1,0 +1,144 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: reviews-route
+spec:
+  hosts:
+    - reviews
+  http:
+    - timeout: 5s
+      route:
+        - destination:
+            host: reviews
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: 5xx
+---
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: istio-egressgateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: egressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+
+apiVersion: networking.istio.io/v1
+kind: ServiceEntry
+metadata:
+  name: ratings-api-https
+spec:
+  hosts:
+    - api.ratings.com
+  location: MESH_EXTERNAL
+  ports:
+    - number: 443
+      name: https
+      protocol: TLS
+  resolution: DNS
+
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: ratings-dr
+spec:
+  host: api.ratings.com
+  trafficPolicy:
+    tls:
+      mode: SIMPLE
+
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: gateway-routing
+  namespace: egress
+spec:
+  hosts:
+    - api.ratings.com
+  gateways:
+    - mesh
+    - istio-egressgateway
+  http:
+    - match:
+        - port: 443
+      route:
+        - destination:
+            host: api.ratings.com
+
+---
+
+apiVersion: security.istio.io/v1
+kind: RequestAuthentication
+metadata:
+  name: req-authn
+  namespace: istio-system
+spec:
+  jwtRules:
+    - issuer: "issuer-foo"
+      jwksUri: https://auth.example.com
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: require-jwt-for-all
+  namespace: istio-system
+spec:
+  action: ALLOW
+  selector:
+    matchLabels:
+      app: productpage
+  rules:
+    - to:
+        - operation:
+            paths: [ "/api" ]
+    - from:
+        - source:
+            requestPrincipals: ["issuer-foo/https://auth.example.com"]
+    - {}
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: bookinfo
+spec:
+  mtls:
+    mode: STRICT
+
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: details
+  namespace: bookinfo
+spec:
+  selector:
+    matchLabels:
+      app: details
+  mtls:
+    mode: PERMISSIVE
+
+---
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: reviews-cb-policy
+spec:
+  host: reviews
+  subsets:
+    - name: reviews-v1
+      labels:
+        version: v1
+      trafficPolicy:
+        outlierDetection:
+          consecutive5xxErrors: 4
+          baseEjectionTime: 10m
+          maxEjectionPercent: 40
+

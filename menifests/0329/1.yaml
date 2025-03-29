@@ -1,0 +1,85 @@
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: productpage-pa
+  namespace: foo
+spec:
+  selector:
+    matchLabels:
+      app: productpage
+  mtls:
+    mode: PERMISSIVE
+---
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: ratings-cb-policy
+spec:
+  host: ratings
+  trafficPolicy:
+    outlierDetection:
+      consecutive5xxErrors: 3
+      baseEjectionTime: 10m
+---
+apiVersion: networking.istio.io/v1
+kind: ServiceEntry
+metadata:
+  name: external-svc-https
+spec:
+  hosts:
+    - api.example.com
+  location: MESH_EXTERNAL
+  ports:
+    - number: 443
+      name: https
+      protocol: TLS
+  resolution: DNS
+
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: example-api-dr
+spec:
+  host: api.example.com
+  trafficPolicy:
+    tls:
+      mode: MUTUAL
+      clientCertificate: /etc/certs/myclientcert.pem
+      privateKey: /etc/certs/client_private_key.pem
+      caCertificates: /etc/certs/rootcacerts.pem
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: details-admin-only
+  namespace: foo
+spec:
+  action: ALLOW
+  rules:
+    - to:
+        - operation:
+            paths: ["/admin"]
+      when:
+        - key: request.headers[x-user]
+          values: ["admin"]
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+  - reviews
+  http:
+    - route:
+      - destination:
+          host: reviews
+          subset: v1
+        weight: 100
+  mirror:
+    host: reviews
+    subset: v2
+  mirrorPercentage:
+    value: 100.0
+
++ v1/ v2 subset 을 위한 dr 도 있어야해

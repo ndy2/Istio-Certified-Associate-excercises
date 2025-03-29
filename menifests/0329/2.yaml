@@ -1,0 +1,97 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: ratings-route
+spec:
+  hosts:
+    - ratings.prod.svc.cluster.local
+  http:
+    - timeout: 5s
+      route:
+        - destination:
+            host: ratings.prod.svc.cluster.local
+            subset: v1
+      retries:
+        attempts: 2
+---
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: ratings
+spec:
+  host: ratings
+  trafficPolicy:
+    outlierDetection:
+      consecutive5xxErrors: 5
+      baseEjectionTime: 15m
+      maxEjectionPercent: 50
+---
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: istio-egressgateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: egressgateway
+  servers:
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - "*"
+
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: gateway-routing
+  namespace: egress
+spec:
+  hosts:
+    - api.example.com
+  gateways:
+    - mesh
+    - istio-egressgateway
+  tls:
+    - match:
+        - port: 443
+      route:
+        - destination:
+            host: api.example.com
+---
+
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: productpage
+spec:
+  selector:
+    matchLabels:
+      app: productpage
+  action: ALLOW
+  rules:
+    - to:
+        - operation:
+            paths: ["/login"]
+      when:
+        - key: request.auth.claims[iss]
+          values: ["https://accounts.google.com"]
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: reviews-route
+spec:
+  hosts:
+    - details
+  http:
+    - route:
+        - destination:
+            host: details
+            subset: v1
+      fault:
+        delay:
+          percentage:
+            value: 20
+          fixedDelay: 3s
