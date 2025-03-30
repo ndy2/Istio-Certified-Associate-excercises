@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: notification
+spec:
+  host: notification-service
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 1
+        maxRequestsPerConnection: 1
+  subsets:
+    - name: default
+      labels:
+        version: v2

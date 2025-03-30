@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: reviews-route
+spec:
+  hosts:
+    - payment-processor.default.svc.cluster.local
+  http:
+    - route:
+        - destination:
+            host: payment-processor.default.svc.cluster.local
+      match:
+        - uri:
+            exact: "/delay"
+      fault:
+        delay:
+          percentage:
+            value: 100
+          fixedDelay: 5s
+    - route:
+        - destination:
+            host: payment-processor.default.svc.cluster.local
+      match:
+      - uri:
+          exact: "/fault"
+      fault:
+        abort:
+          percentage:
+            value: 100
+          httpStatus: 403

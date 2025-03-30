@@ -1,0 +1,19 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: httpbin
+spec:
+  selector:
+    matchLabels:
+      app: payments
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: ["cluster.local/ns/default/sa/payments-1"]
+        - source:
+            principals: ["cluster.local/ns/default/sa/payments-2"]
+      to:
+        - operation:
+            methods: ["GET"]
+            paths: ["/api"]

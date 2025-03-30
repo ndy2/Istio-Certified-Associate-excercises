@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: notification
+spec:
+  hosts:
+    - notification-service
+  http:
+    - route:
+        - destination:
+            host: notification-service
+            subset: v1

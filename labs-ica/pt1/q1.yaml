@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: crossborderpayment-vs
+spec:
+  hosts:
+    - crossborderpayment.com
+  http:
+    - name: "service-routes"
+      match:
+        - uri:
+            prefix: "/payments"
+      route:
+        - destination:
+            host: payments-service.default
+    - name: "frontend-routes"
+      match:
+        - uri:
+            prefix: "/"
+      route:
+        - destination:
+            host: frontend-service.default
+---
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: crossborderpayment-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - crossborderpayment.com

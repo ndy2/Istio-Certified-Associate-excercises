@@ -1,0 +1,14 @@
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: ns-asia-pa
+  namespace: ns-asia
+spec:
+  selector:
+    matchLabels:
+      mtls: strict
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    9095:
+      mode: DISABLE

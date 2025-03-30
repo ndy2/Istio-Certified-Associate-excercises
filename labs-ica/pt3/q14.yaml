@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: secure-booking-gateway
+  namespace: default
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 443
+        name: https-443
+        protocol: HTTPS
+      hosts:
+        - booking.example.com
+      tls:
+        mode: SIMPLE
+        # SIMPLE TLS requires a server certificate
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking
+spec:
+  hosts:
+    - "booking.example.com"
+  gateways:
+    - secure-booking-gateway
+  http:
+    - route:
+        - destination:
+            host: booking-service
