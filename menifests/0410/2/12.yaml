@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: notification
+  namespace: default
+spec:
+  host: notification-service
+  trafficPolicy:
+    outlierDetection:
+      baseEjectionTime: 3m
+      consecutive5xxErrors: 2
+      interval: 1m
+      maxEjectionPercent: 100
+  subsets:
+    - name: default
+      labels:
+        version: v3
