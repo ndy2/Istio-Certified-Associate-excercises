@@ -37,6 +37,10 @@ E. Advanced Scenarios (13%)
 - Understand how to onboard non-kubernetes workloads to the mesh
 - Troubleshoot configuration issues
 
+Topics not covered:
+- Istio Ambient Mode
+- Observability tools integrated with Istio such as Kiali, Grafana, and Prometheus
+
 ## How to study?
 
 documentation
